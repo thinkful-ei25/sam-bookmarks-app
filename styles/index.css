@@ -1,0 +1,94 @@
+* {
+  box-sizing: border-box;
+}
+
+
+
+.main-box {
+  width: 650px;
+  height: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 50px;
+  border: 2px solid grey; 
+  overflow-y: scroll;
+}
+
+.main-box > h1 {
+  text-align: center;
+}
+
+.js-buttons {
+  display: inline-block;
+}
+
+.addBookmark {
+  position: relative;
+  left: 25px;
+}
+
+.addBookmark > button {
+  width: 125px;
+  height: 40px;
+}
+
+.filterRating {
+  display: inline-block;
+  position: relative;
+  left: 375px;
+  top: -40px;
+}
+
+.filterRating > select {
+  height: 40px;
+  width: 200px;
+}
+
+.panel {
+  width: 550px;
+  margin-left: 25px;
+  margin-right: auto;
+}
+
+p {
+  margin-top: 10px;
+}
+
+.bookmark-buttons {
+  display: inline-block;
+  width: 500px;
+  height: 40px;
+}
+
+.bookmark-button {
+  display: inline-block;
+}
+
+.bookmark-button > button {
+  height: 40px;
+  width: 100px;
+}
+
+.bookmark-buttons > .visitURL {
+  margin-left: auto;
+}
+
+.bookmark-buttons > .visitURL > button {
+  background-color: blue;
+  color: white;
+}
+
+.bookmark-buttons > .editBookmark {
+  position: relative;
+  left: 100px;
+}
+
+.bookmark-buttons > .removeBookmark {
+  float: right;
+}
+
+
+.bookmark-buttons > .removeBookmark > button {
+  background-color: red;
+  color: white;
+}

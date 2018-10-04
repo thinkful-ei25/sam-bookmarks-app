@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Bookmarks App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+  <link rel="stylesheet" href="styles/index.css">
+</head>
+<body>
+  <main>
+    <div class="main-box">
+    <h1>My Bookmarks</h1>
+      <div class="js-buttons">
+        <div class="js-addBookmark-button addBookmark">
+          <button>Add Bookmark</button>
+        </div>
+        <div class="js-filterRating filterRating">
+            <select id="minimum-rating-filter" name="Minimum Rating">
+                <option value="0">Minimum Rating</option>
+                <option value="5"><span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span></option>
+                <option value="4"><span>☆</span><span>☆</span><span>☆</span><span>☆</span></option>
+                <option value="3"><span>☆</span><span>☆</span><span>☆</span></option>
+                <option value="2"><span>☆</span><span>☆</span></option>
+                <option value="1"><span>☆</span></option>
+            </select>
+        </div>
+      </div>
+      <div class="js-bookmarks">
+        <div class="panel panel-default js-bookmark">
+          <div class="panel-heading">Website 1</div>
+          <div class="panel-body">
+              <div class="rating">
+                  <span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span>
+              </div>
+          </div>
+        </div>
+        <div class="panel panel-default js-bookmark js-bookmark-expanded">
+            <div class="panel-heading">Website 1</div>
+            <div class="panel-body">
+                <div class="rating">
+                    <span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span>
+                </div>
+                <div class="description">
+                  <p>Website Description</p>
+                </div>
+                <div class="bookmark-buttons">
+                    <div class="js-visitURL visitURL bookmark-button">
+                        <button>Visit Website</button>
+                    </div>
+                    <div class="js-editBookmark editBookmark bookmark-button">
+                        <button>Edit</button>
+                    </div>
+                    <div class="js-removeBookmark removeBookmark bookmark-button">
+                        <button>Remove</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default panel js-addBookmark addBookmark-panel">
+          <div class="panel-heading">Add a Bookmark</div>
+          <div class="panel-body">
+            
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/cuid/1.3.8/browser-cuid.min.js"></script>
+  <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="scripts/store.js"></script>
+  <script type="text/javascript" src="scripts/bookmarks.js"></script>
+  <script type="text/javascript" src="scripts/api.js"></script>  
+  <script type="text/javascript" src="scripts/index.js"></script>
+</body>
+</html>
