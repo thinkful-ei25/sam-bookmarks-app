@@ -92,3 +92,31 @@ p {
   background-color: red;
   color: white;
 }
+
+.websiteInput {
+  margin-bottom: 10px;
+  width: 175px;
+}
+
+.urlInput {
+  position: relative;
+  left: 21px;
+  width: 175px;
+}
+
+.bookmark-rating {
+  float: right;
+  margin-right: 25px;
+}
+
+.website-description {
+  width: 375px;
+  height: 100px;
+}
+
+.add-bookmark-submit {
+  position: relative;
+  float: right;
+  clear: both;
+  margin-top: 10px;
+}
