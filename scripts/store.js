@@ -38,6 +38,14 @@ const store = (function(){
     this.ratingFilter = ratingFilter;
   };
 
+  const setErrorMessage = function(string){
+    this.error = string;
+  };
+
+  const setShowError = function(show){
+    this.showError = show;
+  };
+
   const setAddingBookmark = function(addingBookmark){
     this.addingBookmark = addingBookmark;
   };
@@ -51,6 +59,7 @@ const store = (function(){
     bookmarks : [],
     ratingFilter : 0,
     error: '',
+    showError : false,
     addingBookmark : false,
 
     addBookmark,
@@ -59,6 +68,8 @@ const store = (function(){
     findAndDelete,
     setBookmarkIsExpanded,
     setRatingFilter,
+    setErrorMessage,
+    setShowError,
     setAddingBookmark,
     setBookmarkIsEditing
   };

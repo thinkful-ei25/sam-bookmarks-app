@@ -18,6 +18,24 @@
   text-align: center;
 }
 
+.error-box{
+  border: 2px dashed red;
+  width: 350px;
+  position: relative;
+  left: 125px;
+  margin-bottom: 20px;
+}
+
+.error-box > h2 {
+  color: red;
+  text-align: center;
+  font-size: 20px;
+}
+
+.error-box > p {
+  text-align: center;
+}
+
 .js-buttons {
   display: inline-block;
 }

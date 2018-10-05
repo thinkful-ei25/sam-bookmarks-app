@@ -50,7 +50,7 @@ const bookmarks = (function(){
             </div>
             <div class="bookmark-buttons">
               <div class="js-visitURL visitURL bookmark-button">
-                <button><span class="glyphicon glyphicon-globe"></span> Visit URL</button>
+                <button><span class="glyphicon glyphicon-globe"></span> Visit Site</button>
               </div>
               <div class="js-editBookmark-button editBookmark bookmark-button">
                 <button><span class="glyphicon glyphicon-pencil"></span> Edit</button>
@@ -137,6 +137,14 @@ const bookmarks = (function(){
 
   }
 
+  function generateErrorElement(){
+    return `
+    <div class="error-box">
+      <h2 class="error-header">ERROR</h2>
+      <p class="error-message">${store.error}</p>
+    </div>`;
+  }
+
   function generateRatingFilter(){
     const rating = store.ratingFilter;
     const answer = ['','','','','',''];
@@ -157,6 +165,12 @@ const bookmarks = (function(){
   function render(){
     let bookmarks = store.bookmarks;
 
+    if(store.showError){
+      $('.js-error-message').html(generateErrorElement());
+    } else {
+      $('.js-error-message').html('');
+    }
+      
     $('.js-buttons').html(generateBookmarkTopBar());
     
     const ratingFilter = store.ratingFilter;
@@ -167,6 +181,7 @@ const bookmarks = (function(){
     const bookmarkItemsString = generateBookmarksString(bookmarks);
     $('.js-bookmarks').html(generateAddBookmarkElement()+bookmarkItemsString);
 
+    
   }
 
   function getBookmarkIDFromElement(item){
@@ -186,6 +201,8 @@ const bookmarks = (function(){
   function handleAddBookmarkExited(){
     $('.js-bookmarks').on('click', '.js-exit-add', event =>{
       store.setAddingBookmark(false);
+      store.setErrorMessage('');
+      store.setShowError(false);
       render();
     });
   }
@@ -202,12 +219,16 @@ const bookmarks = (function(){
       
       api.createBookmark(newBookmarkTitle, newBookmarkURL, newBookmarkDescription, newBookmarkRating, (item)=> {
         store.addBookmark(item);
-        store.error ='';
+        store.setErrorMessage('');
+        store.setShowError(false);
         render();
       }, function(result){
         //retrieve actual error given by AJAX
         const x = JSON.parse(result.responseText);
-        store.error = x.message;
+        store.setAddingBookmark(true);
+        store.setErrorMessage(x.message);
+        store.setShowError(true);
+        render();
       });
 
       store.addingBookmark = false;
@@ -270,6 +291,8 @@ const bookmarks = (function(){
       const id = getBookmarkIDFromElement(event.currentTarget);
       event.preventDefault();
       store.setBookmarkIsEditing(id, false);
+      store.setErrorMessage('');
+      store.setShowError(false);
       render();
     });
   }
@@ -292,9 +315,14 @@ const bookmarks = (function(){
       api.updateBookmark(id,newObj,function(){
         store.findAndUpdate(id,newObj);
         store.setBookmarkIsEditing(id,false);
+        store.setErrorMessage('');
+        store.setShowError(false);
         render();
-      },function(){
-        
+      },function(result){
+        const x = JSON.parse(result.responseText);
+        store.setErrorMessage(x.message);
+        store.setShowError(true);
+        render();
       });
     
     });
