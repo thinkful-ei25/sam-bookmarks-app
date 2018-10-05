@@ -37,7 +37,7 @@ const api = (function() {
 
   };
   
-  const updateBookmark = function(id, updateData, callback){
+  const updateBookmark = function(id, updateData, callbackSuccess,callbackFail){
     updateData = JSON.stringify(updateData);
     $.ajax(
       {
@@ -46,7 +46,8 @@ const api = (function() {
         dataType : 'json',
         contentType : 'application/json',
         data :  updateData,
-        success : callback 
+        success : callbackSuccess,
+        error : callbackFail 
       }
     );
   };

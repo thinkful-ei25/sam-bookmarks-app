@@ -4,20 +4,8 @@
 const bookmarks = (function(){
 
   function generateBookmarkElement(item) {
-    const rating = item.rating;
-    let ratingHTML = '';
-    if(rating === 5){
-      ratingHTML = '<span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span>';
-    } else if (rating === 4){
-      ratingHTML = '<span>☆</span><span>☆</span><span>☆</span><span>☆</span>';
-    } else if (rating === 3){
-      ratingHTML = '<span>☆</span><span>☆</span><span>☆</span>';
-    } else if (rating === 2){
-      ratingHTML = '<span>☆</span><span>☆</span>';
-    } else {
-      ratingHTML = '<span>☆</span>';
-    }
-
+    
+    const rating = generateBookmarkRatingString(item);
     const array = generateRatingFilterRadio(item.id);
 
     console.log('ran generateBookmarkElement');
@@ -27,7 +15,7 @@ const bookmarks = (function(){
         <div class="panel-heading">${item.title}</div>
         <div class="panel-body">
             <div class="rating">
-                ${ratingHTML}
+                ${rating}
             </div>
         </div>
         </div>`;
@@ -36,9 +24,9 @@ const bookmarks = (function(){
       <div class="panel-heading">Edit Bookmark<button class="js-exit-edit exit-edit">✖</button></div>
       <div class="panel-body">
         <form class="edit-bookmark-form js-edit-bookmark-form">
-          <input name="website" class="websiteInput js-website-input" type="text" placeholder="${item.title}">
-          <input name="url" class="urlInput js-url-input" type="text" placeholder="${item.url}">
-          <textarea placeholder="${item.desc}" class="website-description js-website-description"></textarea>
+          <input name="website" class="websiteInput js-website-input" type="text" value="${item.title}">
+          <input name="url" class="urlInput js-url-input" type="text" value="${item.url}">
+          <textarea class="website-description js-website-description">${item.desc}</textarea>
           <div class="js-bookmark-rating bookmark-rating">
             <input type="radio" name="rating" value=5 ${array[5]}><span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span><br>
             <input type="radio" name="rating" value=4 ${array[4]}><span>☆</span><span>☆</span><span>☆</span><span>☆</span><br>
@@ -55,7 +43,7 @@ const bookmarks = (function(){
           <div class="panel-heading">${item.title}<button class="js-exit-expanded exit-expanded">✖</button></div>
           <div class="panel-body">
             <div class="rating">
-                ${ratingHTML}
+                ${rating}
             </div>
             <div class="description">
               <p>${item.desc}</p>
@@ -82,6 +70,23 @@ const bookmarks = (function(){
   function generateBookmarksString(bookmarkList){
     const items = bookmarkList.map((item)=> generateBookmarkElement(item));
     return items.join('');
+  }
+
+  function generateBookmarkRatingString(item){
+    const rating = parseInt(item.rating,10);
+    let ratingHTML = '';
+    if(rating === 5){
+      ratingHTML = '<span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span>';
+    } else if (rating === 4){
+      ratingHTML = '<span>☆</span><span>☆</span><span>☆</span><span>☆</span>';
+    } else if (rating === 3){
+      ratingHTML = '<span>☆</span><span>☆</span><span>☆</span>';
+    } else if (rating === 2){
+      ratingHTML = '<span>☆</span><span>☆</span>';
+    } else{
+      ratingHTML = '<span>☆</span>';
+    }
+    return ratingHTML;
   }
 
   function generateAddBookmarkElement(){
@@ -263,12 +268,38 @@ const bookmarks = (function(){
   function handleEditBookmarkExit(){
     $('.js-bookmarks').on('click', '.js-exit-edit', event =>{
       const id = getBookmarkIDFromElement(event.currentTarget);
-      console.log(event.currentTarget);
       event.preventDefault();
       store.setBookmarkIsEditing(id, false);
       render();
     });
   }
+
+  function handleEditBookmarkSubmit(){
+    $('.js-bookmarks').on('click', '.js-edit-bookmark-submit', event =>{
+      event.preventDefault();
+      const id = getBookmarkIDFromElement(event.currentTarget);
+      console.log('handleEditBookmarkSubmit ran');
+      const bookmarkTitle = $(event.currentTarget).closest('.js-bookmark').find('.js-website-input').val();
+      const bookmarkURL = $(event.currentTarget).closest('.js-bookmark').find('.js-url-input').val();
+      const bookmarkDesc = $(event.currentTarget).closest('.js-bookmark').find('.js-website-description').val();
+      const bookmarkRating = $(event.currentTarget).closest('.js-bookmark').find('input[name="rating"]:checked').val();
+      const newObj = {
+        title : bookmarkTitle,
+        url : bookmarkURL,
+        desc : bookmarkDesc,
+        rating: bookmarkRating
+      };
+      api.updateBookmark(id,newObj,function(){
+        store.findAndUpdate(id,newObj);
+        store.setBookmarkIsEditing(id,false);
+        render();
+      },function(){
+        
+      });
+    
+    });
+  }
+
 
   function handleRemoveBookmarkClicked(){
     $('.js-bookmarks').on('click', '.js-removeBookmark', event => {
@@ -291,6 +322,7 @@ const bookmarks = (function(){
     handleVisitWebsiteClicked();
     handleEditBookmarkClicked();
     handleEditBookmarkExit();
+    handleEditBookmarkSubmit();
     handleRemoveBookmarkClicked();
   }
 
