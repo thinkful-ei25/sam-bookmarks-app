@@ -15,71 +15,9 @@
     <div class="main-box">
     <h1>My Bookmarks</h1>
       <div class="js-buttons">
-        <div class="js-addBookmark-button addBookmark">
-          <button>Add Bookmark</button>
-        </div>
-        <div class="js-filterRating filterRating">
-            <select id="minimum-rating-filter" name="Minimum Rating">
-                <option value="0">Minimum Rating</option>
-                <option value="5"><span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span></option>
-                <option value="4"><span>☆</span><span>☆</span><span>☆</span><span>☆</span></option>
-                <option value="3"><span>☆</span><span>☆</span><span>☆</span></option>
-                <option value="2"><span>☆</span><span>☆</span></option>
-                <option value="1"><span>☆</span></option>
-            </select>
-        </div>
       </div>
-    <div class="js-bookmarks">
-      <div class="panel panel-default js-bookmark" data-item-id="">
-        <div class="panel-heading">Website 1</div>
-        <div class="panel-body">
-            <div class="rating">
-                <span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span>
-            </div>
-          </div>
-        </div>
-        <div class="panel panel-default js-bookmark js-bookmark-expanded">
-          <div class="panel-heading">Website 1</div>
-          <div class="panel-body">
-            <div class="rating">
-                <span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span>
-            </div>
-            <div class="description">
-              <p>Website Description</p>
-            </div>
-            <div class="bookmark-buttons">
-              <div class="js-visitURL visitURL bookmark-button">
-                <button>Visit Website</button>
-              </div>
-              <div class="js-editBookmark editBookmark bookmark-button">
-                <button>Edit</button>
-              </div>
-              <div class="js-removeBookmark removeBookmark bookmark-button">
-                <button>Remove</button>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="panel panel-default panel js-addBookmark addBookmark-panel">
-          <div class="panel-heading">Add a Bookmark</div>
-          <div class="panel-body">
-            <form class="js-add-bookmark-form add-bookmark-form">
-              <input name="website" class="websiteInput js-website-input" type="text" placeholder="Website Name">
-              <input name="url" class="urlInput js-url-input" type="text" placeholder="Website URL">
-              <textarea placeholder="Enter a website description..." class="website-description js-website-description"></textarea>
-               <div class="js-bookmark-rating bookmark-rating">
-                 <input type="radio" value=5><span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span><br>
-                 <input type="radio" value=4><span>☆</span><span>☆</span><span>☆</span><span>☆</span><br>
-                 <input type="radio" value=3><span>☆</span><span>☆</span><span>☆</span><br>
-                 <input type="radio" value=2><span>☆</span><span>☆</span><br>
-                 <input type="radio" value=1><span>☆</span>
-               </div>
-               <button class="add-bookmark-submit js-add-bookmark-submit">Add Bookmark</button>
-            </form>
-          </div>
-        </div>
+      <div class="js-bookmarks">
       </div>
-
     </div>
   </main>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/cuid/1.3.8/browser-cuid.min.js"></script>
