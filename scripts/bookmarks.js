@@ -20,8 +20,8 @@ const bookmarks = (function(){
 
     console.log('ran generateBookmarkElement');
 
-    if(item.isExpanded){
-      return `<div class="panel panel-default js-bookmark" data-item-id="${item.id}">
+    if(!item.isExpanded){
+      return `<div class="panel panel-default js-bookmark js-bookmark-closed" data-item-id="${item.id}">
         <div class="panel-heading">${item.title}</div>
         <div class="panel-body">
             <div class="rating">
@@ -31,7 +31,7 @@ const bookmarks = (function(){
         </div>`;
     } else {
       return `<div class="panel panel-default js-bookmark js-bookmark-expanded" data-item-id="${item.id}">
-          <div class="panel-heading">${item.title}</div>
+          <div class="panel-heading">${item.title}<button class="js-exit-expanded exit-expanded">✖</button></div>
           <div class="panel-body">
             <div class="rating">
                 ${ratingHTML}
@@ -41,13 +41,13 @@ const bookmarks = (function(){
             </div>
             <div class="bookmark-buttons">
               <div class="js-visitURL visitURL bookmark-button">
-                <button>Visit Website</button>
+                <button><span class="glyphicon glyphicon-globe"></span> Visit URL</button>
               </div>
               <div class="js-editBookmark editBookmark bookmark-button">
-                <button>Edit</button>
+                <button><span class="glyphicon glyphicon-pencil"></span> Edit</button>
               </div>
               <div class="js-removeBookmark removeBookmark bookmark-button">
-                <button>Remove</button>
+                <button><span class="glyphicon glyphicon-trash"></span> Remove</button>
               </div>
             </div>
           </div>
@@ -89,6 +89,7 @@ const bookmarks = (function(){
   }
 
   function generateBookmarkTopBar() {
+    const rating = generateRatingFilter();
     if(!store.addingBookmark){
       return `
       <div class="js-addBookmark-button addBookmark">
@@ -96,18 +97,25 @@ const bookmarks = (function(){
         </div>
         <div class="js-filterRating filterRating">
             <select id="minimum-rating-filter" name="Minimum Rating">
-                <option value="0">Minimum Rating</option>
-                <option value="5"><span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span></option>
-                <option value="4"><span>☆</span><span>☆</span><span>☆</span><span>☆</span></option>
-                <option value="3"><span>☆</span><span>☆</span><span>☆</span></option>
-                <option value="2"><span>☆</span><span>☆</span></option>
-                <option value="1"><span>☆</span></option>
+                <option value="0" ${rating[0]}>Minimum Rating</option>
+                <option value="5" ${rating[5]}><span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span></option>
+                <option value="4" ${rating[4]}><span>☆</span><span>☆</span><span>☆</span><span>☆</span></option>
+                <option value="3" ${rating[3]}><span>☆</span><span>☆</span><span>☆</span></option>
+                <option value="2" ${rating[2]}><span>☆</span><span>☆</span></option>
+                <option value="1" ${rating[1]}><span>☆</span></option>
             </select>
         </div>`;
     } else {
       return '';
     }
 
+  }
+
+  function generateRatingFilter(){
+    const rating = store.ratingFilter;
+    const answer = ['','','','','',''];
+    answer[rating] = 'selected="selected"';
+    return answer;
   }
 
 
@@ -117,7 +125,6 @@ const bookmarks = (function(){
     $('.js-buttons').html(generateBookmarkTopBar());
     
     const ratingFilter = store.ratingFilter;
-    console.log(ratingFilter);
     bookmarks = store.bookmarks.filter(item => item.rating >= ratingFilter);
 
 
@@ -125,6 +132,12 @@ const bookmarks = (function(){
     const bookmarkItemsString = generateBookmarksString(bookmarks);
     $('.js-bookmarks').html(generateAddBookmarkElement()+bookmarkItemsString);
 
+  }
+
+  function getBookmarkIDFromElement(item){
+    return $(item)
+      .closest('.js-bookmark')
+      .data('item-id');
   }
 
   function handleAddBookmarkClicked(){
@@ -148,9 +161,10 @@ const bookmarks = (function(){
         store.addBookmark(item);
         store.error ='';
         render();
-      }, function(){
-        store.error = 'Failed to add item because input field(s) were empty';
-        console.log(store.error);
+      }, function(result){
+        //retrieve actual error given by AJAX
+        const x = JSON.parse(result.responseText);
+        store.error = x.message;
       });
 
       store.addingBookmark = false;
@@ -158,16 +172,28 @@ const bookmarks = (function(){
     });
   }
 
-  function getBookmarkIDFromElement(item){
-    return $(item)
-      .closest('.js-bookmark-expanded')
-      .data('item-id');
-  }
+ 
 
   function handleFilterByRatingsClicked(){
     $('.js-buttons').on('change','.js-filterRating', event => {
       const newFilter = $(':selected').val();
       store.ratingFilter = newFilter;
+      render();
+    });
+  }
+
+  function handleExpandBookmarkClicked(){
+    $('.js-bookmarks').on('click', '.js-bookmark-closed', event =>{
+      const id = getBookmarkIDFromElement(event.currentTarget);
+      store.setBookmarkIsExpanded(id, true);
+      render();
+    });
+  }
+
+  function handleExpandBookmarkClosed(){
+    $('.js-bookmarks').on('click', '.js-exit-expanded',event =>{
+      const id = getBookmarkIDFromElement(event.currentTarget);
+      store.setBookmarkIsExpanded(id, false);
       render();
     });
   }
@@ -195,6 +221,8 @@ const bookmarks = (function(){
     handleAddBookmarkClicked();
     handleNewBookmarkSubmit();
     handleFilterByRatingsClicked();
+    handleExpandBookmarkClicked();
+    handleExpandBookmarkClosed();
     handleVisitWebsiteClicked();
     handleEditBookmarkClicked();
     handleRemoveBookmarkClicked();

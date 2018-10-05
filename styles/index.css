@@ -54,6 +54,12 @@ p {
   margin-top: 10px;
 }
 
+.exit-expanded {
+  float: right;
+  position: relative;
+  top: -3px;
+}
+
 .bookmark-buttons {
   display: inline-block;
   width: 500px;
