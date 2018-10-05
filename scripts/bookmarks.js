@@ -122,7 +122,7 @@ const bookmarks = (function(){
           <button>Add Bookmark</button>
         </div>
         <div class="js-filterRating filterRating">
-            <select id="minimum-rating-filter" name="Minimum Rating">
+            <select id="minimum-rating-filter" name="Minimum Rating" aria-label="Minimum rating filter dropdown">
                 <option value="0" ${rating[0]}>Minimum Rating</option>
                 <option value="5" ${rating[5]}><span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span></option>
                 <option value="4" ${rating[4]}><span>☆</span><span>☆</span><span>☆</span><span>☆</span></option>
