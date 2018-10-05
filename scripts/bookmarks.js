@@ -18,6 +18,7 @@ const bookmarks = (function(){
       ratingHTML = '<span>☆</span>';
     }
 
+    console.log('ran generateBookmarkElement');
 
     if(item.isExpanded){
       return `<div class="panel panel-default js-bookmark" data-item-id="${item.id}">
@@ -33,10 +34,10 @@ const bookmarks = (function(){
           <div class="panel-heading">${item.title}</div>
           <div class="panel-body">
             <div class="rating">
-                ${rating.html}
+                ${ratingHTML}
             </div>
             <div class="description">
-              <p>Website Description</p>
+              <p>${item.desc}</p>
             </div>
             <div class="bookmark-buttons">
               <div class="js-visitURL visitURL bookmark-button">
@@ -49,11 +50,10 @@ const bookmarks = (function(){
                 <button>Remove</button>
               </div>
             </div>
+          </div>
           </div>`;
     }
 
-
-  
   
   
   }
@@ -63,12 +63,34 @@ const bookmarks = (function(){
     return items.join('');
   }
 
+  function generateAddBookmarkElement(){
+    if(store.addingBookmark){
+      return `<div class="panel panel-default panel js-addBookmark addBookmark-panel">
+      <div class="panel-heading">Add a Bookmark</div>
+      <div class="panel-body">
+        <form class="add-bookmark-form js-add-bookmark-form" id="js-add-bookmark-form">
+          <input name="website" class="websiteInput js-website-input" type="text" placeholder="Website Name">
+          <input name="url" class="urlInput js-url-input" type="text" placeholder="Website URL">
+          <textarea placeholder="Enter a website description..." class="website-description js-website-description"></textarea>
+          <div class="js-bookmark-rating bookmark-rating">
+            <input type="radio" value=5><span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span><br>
+            <input type="radio" value=4><span>☆</span><span>☆</span><span>☆</span><span>☆</span><br>
+            <input type="radio" value=3><span>☆</span><span>☆</span><span>☆</span><br>
+            <input type="radio" value=2><span>☆</span><span>☆</span><br>
+            <input type="radio" value=1><span>☆</span>
+          </div>
+          <button class="add-bookmark-submit js-add-bookmark-submit">Add Bookmark</button>
+        </form>
+      </div>
+    </div>`;
+    } else {
+      return '';
+    }
+  }
 
-  function render(){
-    let bookmarks = store.bookmarks;
-
+  function generateBookmarkTopBar() {
     if(!store.addingBookmark){
-      const addAndFilter = `
+      return `
       <div class="js-addBookmark-button addBookmark">
           <button>Add Bookmark</button>
         </div>
@@ -82,37 +104,30 @@ const bookmarks = (function(){
                 <option value="1"><span>☆</span></option>
             </select>
         </div>`;
-      $('.js-buttons').html(addAndFilter);
     } else {
-      const addingBookmark = `<div class="panel panel-default panel js-addBookmark addBookmark-panel">
-          <div class="panel-heading">Add a Bookmark</div>
-          <div class="panel-body">
-            <form class="js-add-bookmark-form add-bookmark-form">
-              <input name="website" class="websiteInput js-website-input" type="text" placeholder="Website Name">
-              <input name="url" class="urlInput js-url-input" type="text" placeholder="Website URL">
-              <textarea placeholder="Enter a website description..." class="website-description js-website-description"></textarea>
-              <div class="js-bookmark-rating bookmark-rating">
-                <input type="radio" value=5><span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span><br>
-                <input type="radio" value=4><span>☆</span><span>☆</span><span>☆</span><span>☆</span><br>
-                <input type="radio" value=3><span>☆</span><span>☆</span><span>☆</span><br>
-                <input type="radio" value=2><span>☆</span><span>☆</span><br>
-                <input type="radio" value=1><span>☆</span>
-              </div>
-              <button class="add-bookmark-submit js-add-bookmark-submit">Add Bookmark</button>
-            </form>
-          </div>
-        </div>`;
-      $('.js-bookmarks').html(addingBookmark);
+      return '';
     }
+
+  }
+
+
+  function render(){
+    let bookmarks = store.bookmarks;
+
+    $('.js-buttons').html(generateBookmarkTopBar());
+    
+    const ratingFilter = store.ratingFilter;
+    bookmarks = store.bookmarks.filter(item => item.rating > ratingFilter);
 
 
     console.log('render ran');
-
+    const bookmarkItemsString = generateBookmarksString(bookmarks);
+    $('.js-bookmarks').html(generateAddBookmarkElement()+bookmarkItemsString);
 
   }
 
   function handleAddBookmarkClicked(){
-    $('.js-buttons').on('click', '.js-addBookmark-button', event =>{
+    $('.js-buttons').on('click', '.js-addBookmark-button', event => {
       store.setAddingBookmark(true);
       render();
     });
@@ -120,7 +135,26 @@ const bookmarks = (function(){
 
 
   function handleNewBookmarkSubmit(){
+    $('.js-bookmarks').on('click', '.js-add-bookmark-submit', function (event){
+      event.preventDefault();
+      const newBookmarkTitle = $('.js-website-input').val();
+      const newBookmarkURL = $('.js-url-input').val();
+      const newBookmarkDescription = $('.js-website-description').val();
+      const newBookmarkRating = $('input:radio').val();
 
+      console.log(newBookmarkDescription);
+      
+      api.createBookmark(newBookmarkTitle, newBookmarkURL, newBookmarkDescription, newBookmarkRating, (item)=> {
+        store.addBookmark(item);
+        store.error ='';
+        render();
+      }, function(){
+        store.error = 'Failed to add item because input field(s) were empty';
+        console.log(store.error);
+      });
+
+
+    });
   }
 
   function handleFilterByRatingsClicked(){

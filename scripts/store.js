@@ -3,7 +3,14 @@
 const store = (function(){
 
   const addBookmark = function(item){
-    this.bookmarks.push(item);
+    const newItem = {
+      title: item.title,
+      url : item.url,
+      desc : item.desc,
+      rating : item.rating,
+      expanded : false
+    };
+    this.bookmarks.push(newItem);
     console.log('ran addBookmark');
   };
   
