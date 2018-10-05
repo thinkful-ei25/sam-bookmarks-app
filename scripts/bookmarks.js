@@ -18,6 +18,8 @@ const bookmarks = (function(){
       ratingHTML = '<span>☆</span>';
     }
 
+    const array = generateRatingFilterRadio(item.id);
+
     console.log('ran generateBookmarkElement');
 
     if(!item.isExpanded){
@@ -29,6 +31,25 @@ const bookmarks = (function(){
             </div>
         </div>
         </div>`;
+    } else if (item.isEditing){
+      return `<div class="panel panel-default panel js-bookmark editBookmark-panel" data-item-id="${item.id}">
+      <div class="panel-heading">Edit Bookmark<button class="js-exit-edit exit-edit">✖</button></div>
+      <div class="panel-body">
+        <form class="edit-bookmark-form js-edit-bookmark-form">
+          <input name="website" class="websiteInput js-website-input" type="text" placeholder="${item.title}">
+          <input name="url" class="urlInput js-url-input" type="text" placeholder="${item.url}">
+          <textarea placeholder="${item.desc}" class="website-description js-website-description"></textarea>
+          <div class="js-bookmark-rating bookmark-rating">
+            <input type="radio" name="rating" value=5 ${array[5]}><span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span><br>
+            <input type="radio" name="rating" value=4 ${array[4]}><span>☆</span><span>☆</span><span>☆</span><span>☆</span><br>
+            <input type="radio" name="rating" value=3 ${array[3]}><span>☆</span><span>☆</span><span>☆</span><br>
+            <input type="radio" name="rating" value=2 ${array[2]}><span>☆</span><span>☆</span><br>
+            <input type="radio" name="rating" value=1 ${array[1]}><span>☆</span>
+          </div>
+          <button class="edit-bookmark-submit js-edit-bookmark-submit">Submit Changes</button>
+        </form>
+      </div>
+    </div>`;
     } else {
       return `<div class="panel panel-default js-bookmark js-bookmark-expanded" data-item-id="${item.id}">
           <div class="panel-heading">${item.title}<button class="js-exit-expanded exit-expanded">✖</button></div>
@@ -43,7 +64,7 @@ const bookmarks = (function(){
               <div class="js-visitURL visitURL bookmark-button">
                 <button><span class="glyphicon glyphicon-globe"></span> Visit URL</button>
               </div>
-              <div class="js-editBookmark editBookmark bookmark-button">
+              <div class="js-editBookmark-button editBookmark bookmark-button">
                 <button><span class="glyphicon glyphicon-pencil"></span> Edit</button>
               </div>
               <div class="js-removeBookmark removeBookmark bookmark-button">
@@ -66,7 +87,7 @@ const bookmarks = (function(){
   function generateAddBookmarkElement(){
     if(store.addingBookmark){
       return `<div class="panel panel-default panel js-addBookmark addBookmark-panel">
-      <div class="panel-heading">Add a Bookmark</div>
+      <div class="panel-heading">Add a Bookmark<button class="js-exit-add exit-add">✖</button></div>
       <div class="panel-body">
         <form class="add-bookmark-form js-add-bookmark-form" id="js-add-bookmark-form">
           <input name="website" class="websiteInput js-website-input" type="text" placeholder="Website Name">
@@ -118,6 +139,15 @@ const bookmarks = (function(){
     return answer;
   }
 
+  function generateRatingFilterRadio(id){
+    const array = store.bookmarks;
+    const bookmark = array.find(item => item.id === id);
+    const rating = bookmark.rating;
+    const answer = ['','','','','',''];
+    answer[rating] = 'checked="checked"';
+    return answer;
+  }
+
 
   function render(){
     let bookmarks = store.bookmarks;
@@ -140,9 +170,17 @@ const bookmarks = (function(){
       .data('item-id');
   }
 
+
   function handleAddBookmarkClicked(){
     $('.js-buttons').on('click', '.js-addBookmark-button', event => {
       store.setAddingBookmark(true);
+      render();
+    });
+  }
+
+  function handleAddBookmarkExited(){
+    $('.js-bookmarks').on('click', '.js-exit-add', event =>{
+      store.setAddingBookmark(false);
       render();
     });
   }
@@ -171,7 +209,6 @@ const bookmarks = (function(){
 
     });
   }
-
  
 
   function handleFilterByRatingsClicked(){
@@ -199,11 +236,38 @@ const bookmarks = (function(){
   }
 
   function handleVisitWebsiteClicked(){
-
+    $('.js-bookmarks').on('click', '.js-visitURL', event => {
+      const id = getBookmarkIDFromElement(event.currentTarget);
+      event.preventDefault();
+      const bookmark = store.bookmarks.find(item => item.id ===id);
+      const url = bookmark.url;
+      openInNewTab(url);
+    });
   }
 
-  function handleEditBookmarkClicked(){
+  function openInNewTab(url){
+    var win = window.open(url, '_blank');
+    win.focus();
+  }
 
+
+  function handleEditBookmarkClicked(){
+    $('.js-bookmarks').on('click', '.js-editBookmark-button', event =>{
+      const id = getBookmarkIDFromElement(event.currentTarget);
+      event.preventDefault();
+      store.setBookmarkIsEditing(id, true);
+      render();
+    });
+  }
+
+  function handleEditBookmarkExit(){
+    $('.js-bookmarks').on('click', '.js-exit-edit', event =>{
+      const id = getBookmarkIDFromElement(event.currentTarget);
+      console.log(event.currentTarget);
+      event.preventDefault();
+      store.setBookmarkIsEditing(id, false);
+      render();
+    });
   }
 
   function handleRemoveBookmarkClicked(){
@@ -219,12 +283,14 @@ const bookmarks = (function(){
 
   function bindEventListeners(){
     handleAddBookmarkClicked();
+    handleAddBookmarkExited();
     handleNewBookmarkSubmit();
     handleFilterByRatingsClicked();
     handleExpandBookmarkClicked();
     handleExpandBookmarkClosed();
     handleVisitWebsiteClicked();
     handleEditBookmarkClicked();
+    handleEditBookmarkExit();
     handleRemoveBookmarkClicked();
   }
 

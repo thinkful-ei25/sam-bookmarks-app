@@ -60,6 +60,14 @@ p {
   top: -3px;
 }
 
+.exit-add {
+  float: right;
+}
+
+.exit-edit {
+  float: right;
+}
+
 .bookmark-buttons {
   display: inline-block;
   width: 500px;

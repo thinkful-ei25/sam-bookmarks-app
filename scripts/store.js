@@ -9,7 +9,8 @@ const store = (function(){
       url : item.url,
       desc : item.desc,
       rating : item.rating,
-      expanded : false
+      expanded : false,
+      isEditing : false
     };
     this.bookmarks.push(newItem);
     console.log('ran addBookmark');
@@ -41,6 +42,11 @@ const store = (function(){
     this.addingBookmark = addingBookmark;
   };
 
+  const setBookmarkIsEditing= function (id, isEditing){
+    const item = this.findById(id);
+    item.isEditing = isEditing;
+  };
+
   return {
     bookmarks : [],
     ratingFilter : 0,
@@ -53,7 +59,8 @@ const store = (function(){
     findAndDelete,
     setBookmarkIsExpanded,
     setRatingFilter,
-    setAddingBookmark
+    setAddingBookmark,
+    setBookmarkIsEditing
   };
 
 }());
