@@ -19,7 +19,7 @@
 }
 
 .error-box{
-  border: 2px dashed red;
+  border: 2px double red;
   width: 350px;
   position: relative;
   left: 125px;

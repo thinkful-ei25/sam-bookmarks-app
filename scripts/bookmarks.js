@@ -94,7 +94,7 @@ const bookmarks = (function(){
       return `<div class="panel panel-default panel js-addBookmark addBookmark-panel">
       <div class="panel-heading">Add a Bookmark<button class="js-exit-add exit-add">✖</button></div>
       <div class="panel-body">
-        <form class="add-bookmark-form js-add-bookmark-form" id="js-add-bookmark-form">
+        <form aria-label="Add Bookmark Form" class="add-bookmark-form js-add-bookmark-form" id="js-add-bookmark-form">
           <input name="website" class="websiteInput js-website-input" type="text" placeholder="Website Name">
           <input name="url" class="urlInput js-url-input" type="text" placeholder="Website URL">
           <textarea placeholder="Enter a website description..." class="website-description js-website-description"></textarea>
