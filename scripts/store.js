@@ -4,6 +4,7 @@ const store = (function(){
 
   const addBookmark = function(item){
     const newItem = {
+      id: item.id,
       title: item.title,
       url : item.url,
       desc : item.desc,
@@ -24,7 +25,7 @@ const store = (function(){
   };
 
   const findAndDelete = function(id) {
-    this.items = this.items.filter(item => item.id !== id );
+    this.bookmarks = this.bookmarks.filter(item => item.id !== id );
   };
 
   const setBookmarkIsExpanded = function(id, isExpanded){

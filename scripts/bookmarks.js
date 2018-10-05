@@ -30,7 +30,7 @@ const bookmarks = (function(){
         </div>
         </div>`;
     } else {
-      return `<div class="panel panel-default js-bookmark js-bookmark-expanded" data-item-id=${item.id}>
+      return `<div class="panel panel-default js-bookmark js-bookmark-expanded" data-item-id="${item.id}">
           <div class="panel-heading">${item.title}</div>
           <div class="panel-body">
             <div class="rating">
@@ -73,11 +73,11 @@ const bookmarks = (function(){
           <input name="url" class="urlInput js-url-input" type="text" placeholder="Website URL">
           <textarea placeholder="Enter a website description..." class="website-description js-website-description"></textarea>
           <div class="js-bookmark-rating bookmark-rating">
-            <input type="radio" value=5><span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span><br>
-            <input type="radio" value=4><span>☆</span><span>☆</span><span>☆</span><span>☆</span><br>
-            <input type="radio" value=3><span>☆</span><span>☆</span><span>☆</span><br>
-            <input type="radio" value=2><span>☆</span><span>☆</span><br>
-            <input type="radio" value=1><span>☆</span>
+            <input type="radio" name="rating" value=5><span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span><br>
+            <input type="radio" name="rating" value=4><span>☆</span><span>☆</span><span>☆</span><span>☆</span><br>
+            <input type="radio" name="rating" value=3><span>☆</span><span>☆</span><span>☆</span><br>
+            <input type="radio" name="rating" value=2><span>☆</span><span>☆</span><br>
+            <input type="radio" name="rating" value=1><span>☆</span>
           </div>
           <button class="add-bookmark-submit js-add-bookmark-submit">Add Bookmark</button>
         </form>
@@ -117,7 +117,8 @@ const bookmarks = (function(){
     $('.js-buttons').html(generateBookmarkTopBar());
     
     const ratingFilter = store.ratingFilter;
-    bookmarks = store.bookmarks.filter(item => item.rating > ratingFilter);
+    console.log(ratingFilter);
+    bookmarks = store.bookmarks.filter(item => item.rating >= ratingFilter);
 
 
     console.log('render ran');
@@ -140,9 +141,8 @@ const bookmarks = (function(){
       const newBookmarkTitle = $('.js-website-input').val();
       const newBookmarkURL = $('.js-url-input').val();
       const newBookmarkDescription = $('.js-website-description').val();
-      const newBookmarkRating = $('input:radio').val();
+      const newBookmarkRating = $('input[name="rating"]:checked').val();
 
-      console.log(newBookmarkDescription);
       
       api.createBookmark(newBookmarkTitle, newBookmarkURL, newBookmarkDescription, newBookmarkRating, (item)=> {
         store.addBookmark(item);
@@ -153,12 +153,23 @@ const bookmarks = (function(){
         console.log(store.error);
       });
 
+      store.addingBookmark = false;
 
     });
   }
 
-  function handleFilterByRatingsClicked(){
+  function getBookmarkIDFromElement(item){
+    return $(item)
+      .closest('.js-bookmark-expanded')
+      .data('item-id');
+  }
 
+  function handleFilterByRatingsClicked(){
+    $('.js-buttons').on('change','.js-filterRating', event => {
+      const newFilter = $(':selected').val();
+      store.ratingFilter = newFilter;
+      render();
+    });
   }
 
   function handleVisitWebsiteClicked(){
@@ -170,7 +181,13 @@ const bookmarks = (function(){
   }
 
   function handleRemoveBookmarkClicked(){
-
+    $('.js-bookmarks').on('click', '.js-removeBookmark', event => {
+      const id = getBookmarkIDFromElement(event.currentTarget);
+      api.deleteBookmark(id, function(){
+        store.findAndDelete(id);
+        render();
+      });
+    });
   }
 
 
